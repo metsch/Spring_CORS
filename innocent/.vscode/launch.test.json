@@ -1,0 +1,30 @@
+{
+    "run": {
+        "default": "",
+        "items": [
+            {
+                "name": "innocent",
+                "projectName": "innocent",
+                "workingDirectory": "d:\\eMundo\\CORS\\Spring_Cors\\innocent",
+                "args": [],
+                "vmargs": [],
+                "env": {},
+                "preLaunchTask": ""
+            }
+        ]
+    },
+    "debug": {
+        "default": "",
+        "items": [
+            {
+                "name": "innocent",
+                "projectName": "innocent",
+                "workingDirectory": "d:\\eMundo\\CORS\\Spring_Cors\\innocent",
+                "args": [],
+                "vmargs": [],
+                "env": {},
+                "preLaunchTask": ""
+            }
+        ]
+    }
+}

