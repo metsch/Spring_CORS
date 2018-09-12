@@ -47,4 +47,11 @@ public class MyController {
     public ResponseEntity<String> getTest() {
         return new ResponseEntity<String>("test", HttpStatus.OK);
     }
+
+    @CrossOrigin(allowCredentials = "true")
+    @RequestMapping(value = "/home")
+    public String login(Model model) {
+
+        return "home";
+    }
 }

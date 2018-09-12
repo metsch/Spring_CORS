@@ -7,14 +7,13 @@
 <body>
     <p>Homepage</p>
     <h1 th:inline="text">Current User: [[${#httpServletRequest.remoteUser}]]!</h1>
+
+    <p>Bank HTML Page <a href="/bankpage">_link</a></p>
+    <p>Test String obj <a href="/test">_link</a></p>
+    <p>Bank data obj <a href="/bank">_link</a></p>
+
     <form th:action="@{/logout}" method="post">
         <input type="submit" value="Sign Out"/>
     </form>
-
-    <p>Bank HTML Page <a href="/bankpage">_link</a></p>
-    <p>Login Page <a href="/login">_link</a></p>
-    <p>Home Page <a href="/home">_link</a></p>
-    <p>Test String obj <a href="/test">_link</a></p>
-    <p>Bank data obj <a href="/bank">_link</a></p>
 </body>
 </html>
