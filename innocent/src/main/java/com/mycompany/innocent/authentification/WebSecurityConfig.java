@@ -1,5 +1,6 @@
 package com.mycompany.innocent.authentification;
 
+import com.mycompany.innocent.authentification.CustomLogoutSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,12 +24,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.cors().and().csrf().disable().authorizeRequests().antMatchers("/").permitAll()
-        .and().httpBasic().and()
-		.formLogin()
-			.loginPage("/login") 
-            .permitAll()
-        .and().logout().permitAll();
+        http
+        .cors().and()
+        .authorizeRequests().antMatchers("/","/login").permitAll()
+        .anyRequest().authenticated()
+        .and()
+        .httpBasic().authenticationEntryPoint(authEntryPoint);
+
+        // .and()
+		// .formLogin()
+		// 	.loginPage("/login") 
+        //     .defaultSuccessUrl("/home",true)
+        // .and()
+        // .logout()
+        // .logoutSuccessUrl("/")
+        // .deleteCookies("JSESSIONID")
+        // .logoutSuccessHandler(logoutSuccessHandler());
     }
 
     @Bean
@@ -37,5 +48,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         UserDetails user = User.withDefaultPasswordEncoder().username("user").password("pw").roles("USER").build();
 
         return new InMemoryUserDetailsManager(user);
+    }
+
+    @Bean
+    public CustomLogoutSuccessHandler logoutSuccessHandler() {
+        return new CustomLogoutSuccessHandler();
     }
 }

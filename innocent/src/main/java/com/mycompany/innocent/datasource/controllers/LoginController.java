@@ -18,7 +18,7 @@ public class LoginController {
 
     @CrossOrigin(allowCredentials = "true")
     @RequestMapping(value = "/login")
-    public String index(Model model) {
+    public String login(Model model) {
 
         return "login";
     }
