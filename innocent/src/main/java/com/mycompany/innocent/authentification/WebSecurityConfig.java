@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.authentication.www.DigestAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -30,12 +31,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .anyRequest().authenticated()
         .and()
         .httpBasic().authenticationEntryPoint(authEntryPoint);
-
         // .and()
 		// .formLogin()
 		// 	.loginPage("/login") 
         //     .defaultSuccessUrl("/home",true)
         // .and()
+        // .logout().logoutUrl("/logout").permitAll();
+
         // .logout()
         // .logoutSuccessUrl("/")
         // .deleteCookies("JSESSIONID")
