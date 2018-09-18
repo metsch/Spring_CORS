@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class MyController {
 
     @RequestMapping(value = "/bank")
-    @CrossOrigin(allowCredentials = "true")
+    @CrossOrigin(allowCredentials="true")
     public ResponseEntity<List<String>> getList(Model model) {
         List<String> bank = new LinkedList<String>();
         bank.add("Michael: 3550000 €");

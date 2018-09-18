@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -13,47 +14,66 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.authentication.www.DigestAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.www.DigestAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private AuthenticationEntryPoint authEntryPoint;
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+
+        
         http
-        .cors().and()
-        .authorizeRequests().antMatchers("/","/login").permitAll()
-        .anyRequest().authenticated()
-        .and()
-        .httpBasic().authenticationEntryPoint(authEntryPoint);
-        // .and()
+        .addFilter(digestAuthenticationFilter()) 
+                .exceptionHandling().authenticationEntryPoint(digestEntryPoint()) 
+                                                                                  
+                .and().httpBasic()
+                .and().authorizeRequests().antMatchers("/","/login").permitAll() 
+                                                                           
+                .anyRequest().authenticated();
+        //         .and()
 		// .formLogin()
 		// 	.loginPage("/login") 
         //     .defaultSuccessUrl("/home",true)
         // .and()
-        // .logout().logoutUrl("/logout").permitAll();
-
-        // .logout()
-        // .logoutSuccessUrl("/")
-        // .deleteCookies("JSESSIONID")
-        // .logoutSuccessHandler(logoutSuccessHandler());
+        // .logout().deleteCookies("JSESSIONID").logoutUrl("/logout").permitAll();
     }
 
-    @Bean
+    DigestAuthenticationFilter digestAuthenticationFilter() throws Exception {
+        DigestAuthenticationFilter digestAuthenticationFilter = new DigestAuthenticationFilter();
+        digestAuthenticationFilter.setUserDetailsService(userDetailsServiceBean());
+        digestAuthenticationFilter.setAuthenticationEntryPoint(digestEntryPoint());
+        return digestAuthenticationFilter;
+    }
+
     @Override
-    public UserDetailsService userDetailsService() {
-        UserDetails user = User.withDefaultPasswordEncoder().username("user").password("pw").roles("USER").build();
-
-        return new InMemoryUserDetailsManager(user);
+    @Bean
+    public UserDetailsService userDetailsServiceBean() {
+        InMemoryUserDetailsManager inMemoryUserDetailsManager = new InMemoryUserDetailsManager();
+        inMemoryUserDetailsManager.createUser(User.withUsername("user").password("pw").roles("USER").build());
+        return inMemoryUserDetailsManager;
     }
 
     @Bean
-    public CustomLogoutSuccessHandler logoutSuccessHandler() {
-        return new CustomLogoutSuccessHandler();
+    DigestAuthenticationEntryPoint digestEntryPoint() {
+        DigestAuthenticationEntryPoint bauth = new DigestAuthenticationEntryPoint();
+        bauth.setRealmName("CORS_EXAMPLE");
+        bauth.setKey("MySecureKey");
+        return bauth;
+    }
+
+    @Bean
+    public AuthenticationManager customAuthenticationManager() throws Exception {
+        return authenticationManager();
+    }
+
+    @SuppressWarnings("deprecation")
+    @Bean
+    public static NoOpPasswordEncoder passwordEncoder() {
+        return (NoOpPasswordEncoder) NoOpPasswordEncoder.getInstance();
     }
 }
